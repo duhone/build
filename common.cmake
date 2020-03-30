@@ -45,6 +45,8 @@ endfunction()
 
 function(settingsCR target)	
 	addCommon(${target})
-	target_compile_options(${target} PRIVATE /Wall)
+	target_compile_options(${target} PRIVATE /W4)
 	target_compile_options(${target} PRIVATE /WX)
+	
+	target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../3rdParty/include")
 endfunction()
