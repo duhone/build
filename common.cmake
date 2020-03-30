@@ -49,4 +49,7 @@ function(settingsCR target)
 	target_compile_options(${target} PRIVATE /WX)
 	
 	target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../3rdParty/include")
+	
+	# disable unit tests in profile and final builds
+	target_compile_definitions(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Profile>,$<CONFIG:Final>>>:DOCTEST_CONFIG_DISABLE>)	
 endfunction()
