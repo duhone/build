@@ -32,6 +32,51 @@ function(addCommon target)
 	source_group("Public Headers" FILES ${PUBLIC_HDRS})
 	source_group("Source" FILES ${SRCS})
 	source_group("Build" FILES ${BUILD})
+	
+	target_precompile_headers(${target} PRIVATE 
+		<cstdlib>
+		<type_traits>
+		<bitset>
+		<functional>
+		<utility>
+		<chrono>
+		<cstddef>
+		<initializer_list>
+		<tuple>
+		<optional>
+		<variant>
+		<memory>
+		<memory_resource>
+		<cstdint>
+		<cinttypes>
+		<limits>
+		<exception>
+		<cctype>
+		<cstring>
+		<string>
+		<string_view>
+		<charconv>
+		<array>
+		<vector>
+		<deque>
+		<queue>
+		<iterator>
+		<algorithm>
+		<execution>
+		<cmath>
+		<random>
+		<numeric>
+		<cstdio>
+		<atomic>
+		<thread>
+		<mutex>
+		<shared_mutex>
+		<future>
+		<condition_variable>
+		<filesystem>
+	)
+	
+	target_link_options(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>>:/Debug:fastlink>)
 endfunction()
 
 
