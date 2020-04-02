@@ -1,5 +1,6 @@
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=cppcoreguidelines-*)
 
 function(addCommon target)	
 	target_compile_options(${target} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/GR->)
@@ -96,5 +97,17 @@ function(settingsCR target)
 	target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../3rdParty/include")
 	
 	# disable unit tests in profile and final builds
-	target_compile_definitions(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Profile>,$<CONFIG:Final>>>:DOCTEST_CONFIG_DISABLE>)	
+	target_compile_definitions(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Profile>,$<CONFIG:Final>>>:DOCTEST_CONFIG_DISABLE>)
+	
+	set_target_properties(${target} PROPERTIES
+		VS_GLOBAL_RunCodeAnalysis false
+
+		# Use visual studio core guidelines
+		VS_GLOBAL_EnableMicrosoftCodeAnalysis false
+
+		# Use clangtidy
+		VS_GLOBAL_EnableClangTidyCodeAnalysis true
+		VS_GLOBAL_ClangTidyChecks "-checks=-*,modernize-*, -modernize-avoid-c-arrays, -modernize-use-trailing-return-type, \
+bugprone-*, -bugprone-bool-pointer-implicit-conversion, cppcoreguidelines-*, misc-*, performance-*, readability-*, -readability-uppercase-literal-suffix"
+	)
 endfunction()
