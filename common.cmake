@@ -20,10 +20,14 @@ function(addCommon target)
 	target_compile_options(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:RelWithDebInfo>,$<CONFIG:Profile>,$<CONFIG:Final>>>:/Ob2>)
 	target_compile_options(${target} PRIVATE /sdl-)
 		
-	target_compile_definitions(${target} PRIVATE $<$<CONFIG:Debug>:CR_DEBUG>)
-	target_compile_definitions(${target} PRIVATE $<$<CONFIG:RelWithDebInfo>:CR_RELEASE>)
-	target_compile_definitions(${target} PRIVATE $<$<CONFIG:Profile>:CR_PROFILE>)
-	target_compile_definitions(${target} PRIVATE $<$<CONFIG:Final>:CR_FINAL>)
+	target_compile_definitions(${target} PRIVATE $<$<CONFIG:Debug>:CR_DEBUG=1>)
+	target_compile_definitions(${target} PRIVATE $<$<NOT:$<CONFIG:Debug>>:CR_DEBUG=0>)
+	target_compile_definitions(${target} PRIVATE $<$<CONFIG:RelWithDebInfo>:CR_RELEASE=1>)
+	target_compile_definitions(${target} PRIVATE $<$<NOT:$<CONFIG:RelWithDebInfo>>:CR_RELEASE=0>)
+	target_compile_definitions(${target} PRIVATE $<$<CONFIG:Profile>:CR_PROFILE=1>)
+	target_compile_definitions(${target} PRIVATE $<$<NOT:$<CONFIG:Profile>>:CR_PROFILE=0>)
+	target_compile_definitions(${target} PRIVATE $<$<CONFIG:Final>:CR_FINAL=1>)
+	target_compile_definitions(${target} PRIVATE $<$<NOT:$<CONFIG:Final>>:CR_FINAL=0>)
 	target_compile_definitions(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Profile>,$<CONFIG:Final>>>:NDEBUG>)
 	
 	# generator expressions aren't working with INTERPROCEDURAL_OPTIMIZATION_PROFILE
