@@ -112,6 +112,6 @@ function(settingsCR target)
 		# Use clangtidy
 		VS_GLOBAL_EnableClangTidyCodeAnalysis true
 		VS_GLOBAL_ClangTidyChecks "-checks=-*,modernize-*, -modernize-avoid-c-arrays, -modernize-use-trailing-return-type, \
-bugprone-*, -bugprone-bool-pointer-implicit-conversion, cppcoreguidelines-*, misc-*, performance-*, readability-*, -readability-uppercase-literal-suffix"
+bugprone-*, -bugprone-bool-pointer-implicit-conversion, cppcoreguidelines-*, -cppcoreguidelines-avoid-c-arrays, misc-*, performance-*, readability-*, -readability-uppercase-literal-suffix"
 	)
 endfunction()
