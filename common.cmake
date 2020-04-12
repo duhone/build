@@ -38,6 +38,21 @@ function(addCommon target)
 	source_group("Source" FILES ${SRCS})
 	source_group("Build" FILES ${BUILD})
 	
+	target_link_options(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>>:/Debug:fastlink>)
+endfunction()
+
+
+function(settings3rdParty target)	
+	addCommon(${target})
+	target_compile_options(${target} PRIVATE /W0)
+	target_compile_options(${target} PRIVATE /WX-)
+	
+	set_property(TARGET ${target} APPEND PROPERTY FOLDER 3rdParty)
+endfunction()
+
+function(settingsCR target)	
+	addCommon(${target})
+	
 	target_precompile_headers(${target} PRIVATE 
 		<cstdlib>
 		<type_traits>
@@ -81,20 +96,6 @@ function(addCommon target)
 		<filesystem>
 	)
 	
-	target_link_options(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>>:/Debug:fastlink>)
-endfunction()
-
-
-function(settings3rdParty target)	
-	addCommon(${target})
-	target_compile_options(${target} PRIVATE /W0)
-	target_compile_options(${target} PRIVATE /WX-)
-	
-	set_property(TARGET ${target} APPEND PROPERTY FOLDER 3rdParty)
-endfunction()
-
-function(settingsCR target)	
-	addCommon(${target})
 	target_compile_options(${target} PRIVATE /W4)
 	target_compile_options(${target} PRIVATE /WX)
 	
