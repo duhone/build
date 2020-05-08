@@ -32,11 +32,7 @@ function(addCommon target)
 	
 	# generator expressions aren't working with INTERPROCEDURAL_OPTIMIZATION_PROFILE
 	set_target_properties(${target} PROPERTIES INTERPROCEDURAL_OPTIMIZATION_PROFILE TRUE)
-	set_target_properties(${target} PROPERTIES INTERPROCEDURAL_OPTIMIZATION_FINAL TRUE)
-	
-	source_group("Public Headers" FILES ${PUBLIC_HDRS})
-	source_group("Source" FILES ${SRCS})
-	source_group("Build" FILES ${BUILD})
+	set_target_properties(${target} PROPERTIES INTERPROCEDURAL_OPTIMIZATION_FINAL TRUE)	
 	
 	target_link_options(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>>:/Debug:fastlink>)
 endfunction()
@@ -44,6 +40,11 @@ endfunction()
 
 function(settings3rdParty target)	
 	addCommon(${target})
+	
+	source_group("Public Headers" FILES ${PUBLIC_HDRS})
+	source_group("Source" FILES ${SRCS})
+	source_group("Build" FILES ${BUILD})
+	
 	target_compile_options(${target} PRIVATE /W0)
 	target_compile_options(${target} PRIVATE /WX-)
 	
@@ -52,6 +53,10 @@ endfunction()
 
 function(settingsCR target)	
 	addCommon(${target})
+	
+	source_group(TREE ${root} FILES ${PUBLIC_HDRS})
+	source_group(TREE ${root} FILES ${SRCS})
+	source_group(TREE ${root} FILES ${BUILD})
 	
 	target_precompile_headers(${target} PRIVATE 
 		<cstdlib>
