@@ -57,7 +57,29 @@ function(settingsCR target)
 	source_group(TREE ${root} FILES ${PUBLIC_HDRS})
 	source_group(TREE ${root} FILES ${SRCS})
 	source_group(TREE ${root} FILES ${BUILD})
+		
+	target_compile_options(${target} PRIVATE /W4)
+	target_compile_options(${target} PRIVATE /WX)
 	
+	target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../3rdParty/include")
+	
+	# disable unit tests in profile and final builds
+	target_compile_definitions(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Profile>,$<CONFIG:Final>>>:DOCTEST_CONFIG_DISABLE>)
+	
+	set_target_properties(${target} PROPERTIES
+		VS_GLOBAL_RunCodeAnalysis false
+
+		# Use visual studio core guidelines
+		VS_GLOBAL_EnableMicrosoftCodeAnalysis false
+
+		# Use clangtidy
+		VS_GLOBAL_EnableClangTidyCodeAnalysis true
+		VS_GLOBAL_ClangTidyChecks "-checks=-*,modernize-*, -modernize-avoid-c-arrays, -modernize-use-trailing-return-type, \
+bugprone-*, -bugprone-bool-pointer-implicit-conversion, cppcoreguidelines-*, -cppcoreguidelines-avoid-c-arrays, misc-*, performance-*, readability-*, -readability-uppercase-literal-suffix"
+	)
+endfunction()
+
+function(createPCH target)	
 	target_precompile_headers(${target} PRIVATE 
 		<cstdlib>
 		<type_traits>
@@ -99,25 +121,15 @@ function(settingsCR target)
 		<future>
 		<condition_variable>
 		<filesystem>
+		<3rdParty/fmt.h>
+		<3rdParty/function2.h>
+		<3rdParty/spdlog.h>
+		<3rdParty/glm.h>
+		<3rdParty/robinmap.h>
 	)
-	
-	target_compile_options(${target} PRIVATE /W4)
-	target_compile_options(${target} PRIVATE /WX)
-	
-	target_include_directories(${target} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../../3rdParty/include")
-	
-	# disable unit tests in profile and final builds
-	target_compile_definitions(${target} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Profile>,$<CONFIG:Final>>>:DOCTEST_CONFIG_DISABLE>)
-	
-	set_target_properties(${target} PROPERTIES
-		VS_GLOBAL_RunCodeAnalysis false
+endfunction()
 
-		# Use visual studio core guidelines
-		VS_GLOBAL_EnableMicrosoftCodeAnalysis false
-
-		# Use clangtidy
-		VS_GLOBAL_EnableClangTidyCodeAnalysis true
-		VS_GLOBAL_ClangTidyChecks "-checks=-*,modernize-*, -modernize-avoid-c-arrays, -modernize-use-trailing-return-type, \
-bugprone-*, -bugprone-bool-pointer-implicit-conversion, cppcoreguidelines-*, -cppcoreguidelines-avoid-c-arrays, misc-*, performance-*, readability-*, -readability-uppercase-literal-suffix"
-	)
+# doesn't really work yet
+function(usePCH target fromTarget)	
+	target_precompile_headers(${target} REUSE_FROM ${fromTarget})
 endfunction()
